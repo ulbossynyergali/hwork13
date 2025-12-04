@@ -4,7 +4,6 @@ using System.Linq;
 
 namespace TicketVendingMachine
 {
-    // Перечисление состояний автомата
     public enum VendingMachineState
     {
         Idle,
@@ -21,7 +20,6 @@ namespace TicketVendingMachine
         RefundProcessing
     }
 
-    // Перечисление типов билетов
     public enum TicketType
     {
         Adult,
@@ -31,7 +29,6 @@ namespace TicketVendingMachine
         VIP
     }
 
-    // Класс билета
     public class Ticket
     {
         public TicketType Type { get; set; }
@@ -62,7 +59,6 @@ namespace TicketVendingMachine
         }
     }
 
-    // Паттерн State - интерфейс состояния
     public interface IVendingMachineState
     {
         void SelectTicket(TicketType ticketType, string destination);
@@ -81,7 +77,6 @@ namespace TicketVendingMachine
         string GetStatusMessage();
     }
 
-    // Конкретные состояния
 
     public class IdleState : IVendingMachineState
     {
@@ -316,7 +311,6 @@ namespace TicketVendingMachine
         
         public void DispenseTicket()
         {
-            // Имитация выдачи билета
             bool success = _context.DispensePhysicalTicket();
             
             if (success)
@@ -406,10 +400,6 @@ namespace TicketVendingMachine
         public string GetStatusMessage() => "Билет выдан. Получите сдачу или выберите новый билет.";
     }
 
-    // Остальные состояния (ChangeDispensingState, ChangeDispensedState, TransactionCanceledState, 
-    // ErrorState, MaintenanceModeState, RefundProcessingState) реализуются аналогично
-
-    // Основной класс автомата
     public class TicketVendingMachine
     {
         public VendingMachineState CurrentState { get; private set; }
@@ -439,8 +429,8 @@ namespace TicketVendingMachine
             
             AvailableTickets = new List<Ticket>();
             InsertedMoney = 0m;
-            AvailableChange = 500m; // Начальная сдача в автомате
-            TicketInventory = 50; // Начальный запас билетов
+            AvailableChange = 500m;
+            TicketInventory = 50; 
             
             InitializeTickets();
         }
@@ -463,7 +453,6 @@ namespace TicketVendingMachine
             _currentStateObject = newState;
             ((dynamic)_currentStateObject).SetContext(this);
             
-            // Обновляем перечисление состояния
             CurrentState = newState switch
             {
                 IdleState => VendingMachineState.Idle,
@@ -476,7 +465,6 @@ namespace TicketVendingMachine
             };
         }
         
-        // Методы для управления автоматом
         public void SelectTicket(TicketType ticketType, string destination)
         {
             if (_currentStateObject.CanSelectTicket())
@@ -545,7 +533,6 @@ namespace TicketVendingMachine
         
         public bool DispensePhysicalTicket()
         {
-            // Имитация физической выдачи билета
             if (TicketInventory > 0)
             {
                 TicketInventory--;
@@ -582,7 +569,6 @@ namespace TicketVendingMachine
         }
     }
 
-    // Пример использования
     class Program
     {
         static void Main(string[] args)
@@ -592,7 +578,6 @@ namespace TicketVendingMachine
             var machine = new TicketVendingMachine();
             machine.DisplayStatus();
             
-            // Сценарий 1: Успешная покупка билета
             Console.WriteLine("\n=== СЦЕНАРИЙ 1: УСПЕШНАЯ ПОКУПКА ===");
             
             Console.WriteLine("\n1. Выбор билета:");
@@ -615,7 +600,6 @@ namespace TicketVendingMachine
             machine.DispenseChange();
             machine.DisplayStatus();
             
-            // Сценарий 2: Отмена транзакции
             Console.WriteLine("\n=== СЦЕНАРИЙ 2: ОТМЕНА ТРАНЗАКЦИИ ===");
             machine.ResetTransaction();
             
@@ -631,7 +615,6 @@ namespace TicketVendingMachine
             machine.CancelTransaction();
             machine.DisplayStatus();
             
-            // Сценарий 3: Покупка с переплатой
             Console.WriteLine("\n=== СЦЕНАРИЙ 3: ПОКУПКА С ПЕРЕПЛАТОЙ ===");
             machine.ResetTransaction();
             
@@ -651,12 +634,10 @@ namespace TicketVendingMachine
             machine.DispenseChange();
             machine.DisplayStatus();
             
-            // Сценарий 4: Техническое обслуживание
             Console.WriteLine("\n=== СЦЕНАРИЙ 4: ТЕХНИЧЕСКОЕ ОБСЛУЖИВАНИЕ ===");
             machine.ResetTransaction();
             
             Console.WriteLine("\n1. Вход в режим обслуживания:");
-            // Реализуйте метод для входа в режим обслуживания
             
             Console.WriteLine("\nПрограмма завершена.");
         }
